@@ -31,6 +31,7 @@ import {
   Crown,
   DollarSign,
   ExternalLink,
+  Gem,
   Leaf,
   Loader2,
   Menu,
@@ -94,6 +95,15 @@ function paymentBadgeClass(p: PaymentType): string {
       return "bg-amber-950/80 text-amber-400 border border-amber-700/40";
   }
 }
+
+function generateDisplayOrderId(id: bigint): string {
+  const num = Number(id);
+  const part1 = String(1000 + ((num * 7919) % 9000)).padStart(4, "0");
+  const part2 = String.fromCharCode(65 + (num % 26)) + String(num % 10);
+  return `LGN-${part1}-${part2}`;
+}
+
+const PremiumCategory = "premiumServices" as unknown as ServiceCategory;
 
 // ─────────────────────────────────────────────
 // FALLBACK SERVICES (shown while loading or if backend is empty)
@@ -162,7 +172,7 @@ const fallbackServices: Service[] = [
     id: BigInt(6),
     name: "Blox Fruits Raid Service",
     description:
-      "Professional raid assistance — we help you clear raids quickly and efficiently for logia fruits.",
+      "Full raid carry across all 3 seas. Specify which raid (e.g. Flame, Ice, Quake, Buddha, String, Magma, Light, Rumble). We handle all kills — you just join and collect fruits.",
     priceUSD: 7.99,
     available: true,
     category: ServiceCategory.bloxFruits,
@@ -172,7 +182,7 @@ const fallbackServices: Service[] = [
     id: BigInt(7),
     name: "Sea Event Carry",
     description:
-      "Expert carry through all sea events. Guaranteed rewards and safe, efficient clears every run.",
+      "Carry through Sea Beasts, Ship Raids, Rumble events, and Castle on Sea. Guaranteed drops — choose your target event and sea (First, Second, or Third).",
     priceUSD: 12.99,
     available: true,
     category: ServiceCategory.bloxFruits,
@@ -186,7 +196,7 @@ const fallbackServices: Service[] = [
     id: BigInt(8),
     name: "V4 Race Awakening",
     description:
-      "Full V4 race awakening service. Complete all trials with professional players — unlock God Human.",
+      "Complete V4 awakening for any race. Includes Arowe/Uzoth/Hallow quests. Specify your race (Mink, Shark, Angel, Cyborg, or Ghoul). God Human prerequisite available as add-on.",
     priceUSD: 29.99,
     available: true,
     category: ServiceCategory.bloxFruits,
@@ -200,11 +210,204 @@ const fallbackServices: Service[] = [
     id: BigInt(9),
     name: "Rare Fruit Trade",
     description:
-      "Access our exclusive fruit inventory. Trade for Dragon, Leopard, Kitsune and other rare fruits.",
+      "Source and trade any fruit from our stockpile — Dragon, Leopard, Kitsune, T-Rex, Dough, and more. Specify the fruit in notes. Payment in-game fruits or crypto only.",
     priceUSD: 19.99,
     available: true,
     category: ServiceCategory.bloxFruits,
     acceptedPayments: [PaymentType.inGameFruits, PaymentType.crypto],
+  },
+  {
+    id: BigInt(10),
+    name: "Custom Discord Bot Setup",
+    description:
+      "We build and configure a custom Discord bot for your server — welcome messages, auto-roles, moderation commands, and custom slash commands tailored to your needs.",
+    priceUSD: 34.99,
+    available: true,
+    category: ServiceCategory.discordServices,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(11),
+    name: "Fruit Awakening",
+    description:
+      "Full awakening service for any devil fruit — Dragon, Dough, Leopard, Buddha and more. We farm the required materials and complete all awakening quests for you.",
+    priceUSD: 15.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [
+      PaymentType.inGameFruits,
+      PaymentType.money,
+      PaymentType.crypto,
+    ],
+  },
+  {
+    id: BigInt(12),
+    name: "Power Leveling (Max Level)",
+    description:
+      "We grind your account from any level to max level (2450). Fast XP routes, sea events, and boss farms included. ETA varies by starting level.",
+    priceUSD: 24.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [PaymentType.inGameFruits, PaymentType.money],
+  },
+  {
+    id: BigInt(13),
+    name: "Fighting Style Unlock (Dragon Talon / Superhuman)",
+    description:
+      "Full unlock service for Dragon Talon, Superhuman, Death Step, or Sanguine Art. We complete all ingredient quests and trials — no effort needed from you.",
+    priceUSD: 18.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [
+      PaymentType.inGameFruits,
+      PaymentType.money,
+      PaymentType.crypto,
+    ],
+  },
+  {
+    id: BigInt(14),
+    name: "Boss Bounty Hunting",
+    description:
+      "Expert boss runs for Bounty gain — we target specific bosses like Cake Prince, Mihawk, God of Destruction and more. Choose your target and desired Bounty range.",
+    priceUSD: 9.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [PaymentType.inGameFruits, PaymentType.money],
+  },
+  {
+    id: BigInt(15),
+    name: "Legendary Weapon Acquisition (Dark Blade / Yama)",
+    description:
+      "We obtain legendary weapons for your account — Dark Blade, Yama, Pole V2, and other rare swords. Includes all required quest steps and material farming.",
+    priceUSD: 22.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [
+      PaymentType.inGameFruits,
+      PaymentType.money,
+      PaymentType.crypto,
+    ],
+  },
+  {
+    id: BigInt(16),
+    name: "Race Reroll Service",
+    description:
+      "We reroll your race using Race Reroll items until you get the race you want — Cyborg, Ghoul, Mink, Shark, Angel, or Human. Specify your desired race in notes.",
+    priceUSD: 11.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [PaymentType.inGameFruits, PaymentType.money],
+  },
+  {
+    id: BigInt(17),
+    name: "Sword Enchant Service",
+    description:
+      "Enchant your sword with Fire, Ice, or Electric elements. We complete all material farming and the enchanting process — specify the sword and element in notes.",
+    priceUSD: 8.99,
+    available: true,
+    category: ServiceCategory.bloxFruits,
+    acceptedPayments: [PaymentType.inGameFruits, PaymentType.money],
+  },
+  // ── Premium Services ──
+  {
+    id: BigInt(18),
+    name: "Website Creation",
+    description:
+      "Custom-built, fully responsive website tailored to your brand. Specify your style, pages, and features in the notes.",
+    priceUSD: 149.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(19),
+    name: "Custom Discord Bot",
+    description:
+      "Fully custom bot with commands, auto-roles, moderation, and integrations built to your exact specs.",
+    priceUSD: 49.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(20),
+    name: "Premium Role Icons",
+    description:
+      "Hand-crafted animated or static role icons for every rank in your server. Delivered as a full pack.",
+    priceUSD: 19.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(21),
+    name: "Server Setup & Configuration",
+    description:
+      "Complete Discord server setup: channels, roles, permissions, bots, and welcome flows.",
+    priceUSD: 29.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(22),
+    name: "Discord Server Template",
+    description:
+      "Professional server template with structured channels, categories, and role hierarchy.",
+    priceUSD: 14.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(23),
+    name: "Custom Emotes & Stickers Pack",
+    description:
+      "High-quality emotes and stickers designed to match your server's vibe. Up to 10 items.",
+    priceUSD: 24.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(24),
+    name: "Bot Hosting & Maintenance",
+    description:
+      "24/7 hosting for your existing bot with uptime monitoring and monthly updates.",
+    priceUSD: 9.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(25),
+    name: "Server Audit & Security Review",
+    description:
+      "Full review of your server's security, permissions, and bot access with a detailed report.",
+    priceUSD: 19.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(26),
+    name: "Branding Package (Logo + Banner)",
+    description:
+      "Custom server logo and banner art professionally designed for your community.",
+    priceUSD: 39.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
+  },
+  {
+    id: BigInt(27),
+    name: "SEO Landing Page",
+    description:
+      "Clean, fast SEO-optimized landing page for your server or brand. Includes copy and basic meta tags.",
+    priceUSD: 79.99,
+    available: true,
+    category: PremiumCategory,
+    acceptedPayments: [PaymentType.money, PaymentType.crypto],
   },
 ];
 
@@ -298,12 +501,12 @@ function OrderModal({ service, open, onClose }: OrderModalProps) {
                   Order ID
                 </p>
                 <p className="font-mono text-lg font-bold text-primary">
-                  #{orderId.toString()}
+                  {generateDisplayOrderId(orderId)}
                 </p>
               </div>
               <p className="text-sm text-muted-foreground max-w-xs">
-                We'll contact you via the info you provided. Keep your Order ID
-                for reference.
+                We'll contact you via the info you provided. Keep your Order
+                Reference for tracking.
               </p>
               <Button
                 onClick={handleClose}
@@ -500,7 +703,9 @@ function ServiceCard({ service, index, onOrder }: ServiceCardProps) {
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="w-8 h-8 rounded bg-primary/15 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/25 transition-colors">
-              {service.category === ServiceCategory.discordServices ? (
+              {(service.category as unknown as string) === "premiumServices" ? (
+                <Gem className="h-4 w-4 text-primary" />
+              ) : service.category === ServiceCategory.discordServices ? (
                 <Crown className="h-4 w-4 text-primary" />
               ) : (
                 <Sword className="h-4 w-4 text-primary" />
@@ -642,6 +847,15 @@ function Navbar({ onOrderClick }: { onOrderClick: () => void }) {
             </button>
             <button
               type="button"
+              onClick={() => scrollTo("premium-services")}
+              className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded flex items-center gap-1.5"
+              data-ocid="nav.link"
+            >
+              <Gem className="h-3.5 w-3.5 text-primary" />
+              Premium
+            </button>
+            <button
+              type="button"
               onClick={() => scrollTo("track-order")}
               className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded flex items-center gap-1.5"
               data-ocid="nav.link"
@@ -709,6 +923,14 @@ function Navbar({ onOrderClick }: { onOrderClick: () => void }) {
                 data-ocid="nav.link"
               >
                 <Sword className="h-3.5 w-3.5 text-violet" /> Blox Fruits
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollTo("premium-services")}
+                className="text-left px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded flex items-center gap-2"
+                data-ocid="nav.link"
+              >
+                <Gem className="h-3.5 w-3.5 text-primary" /> Premium
               </button>
               <button
                 type="button"
@@ -959,7 +1181,7 @@ function HowItWorksSection() {
 
 interface ServicesSectionProps {
   onOrder: (service: Service) => void;
-  initialTab?: "discord" | "bloxfruits";
+  initialTab?: "discord" | "bloxfruits" | "premium";
 }
 
 function ServicesSection({
@@ -978,6 +1200,9 @@ function ServicesSection({
   );
   const bloxServices = services.filter(
     (s) => s.category === ServiceCategory.bloxFruits,
+  );
+  const premiumServices = services.filter(
+    (s) => (s.category as unknown as string) === "premiumServices",
   );
 
   return (
@@ -1025,6 +1250,15 @@ function ServicesSection({
             >
               <Sword className="h-4 w-4" />
               Blox Fruits
+            </TabsTrigger>
+            <TabsTrigger
+              value="premium"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold flex items-center gap-2 px-5 py-2"
+              data-ocid="services.tab"
+              id="premium-services"
+            >
+              <Gem className="h-4 w-4" />
+              Premium
             </TabsTrigger>
           </TabsList>
 
@@ -1081,6 +1315,38 @@ function ServicesSection({
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {bloxServices.map((s, i) => (
+                  <ServiceCard
+                    key={s.id.toString()}
+                    service={s}
+                    index={i}
+                    onOrder={onOrder}
+                  />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="premium">
+            {isLoading ? (
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                data-ocid="services.loading_state"
+              >
+                {["sk-p1", "sk-p2", "sk-p3"].map((k) => (
+                  <ServiceSkeleton key={k} />
+                ))}
+              </div>
+            ) : premiumServices.length === 0 ? (
+              <div
+                className="text-center py-16 text-muted-foreground"
+                data-ocid="services.empty_state"
+              >
+                <Gem className="h-10 w-10 mx-auto mb-3 opacity-30" />
+                <p>No Premium services available right now.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {premiumServices.map((s, i) => (
                   <ServiceCard
                     key={s.id.toString()}
                     service={s}
@@ -1330,7 +1596,7 @@ function TrackOrderSection() {
                 Look Up Order
               </CardTitle>
               <CardDescription className="text-muted-foreground text-sm">
-                Your Order ID was provided after you placed your order.
+                Enter your Order ID from your confirmation to check status.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1338,7 +1604,7 @@ function TrackOrderSection() {
                 <Input
                   type="number"
                   min="1"
-                  placeholder="e.g. 42"
+                  placeholder="e.g. 1042"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   className="bg-input border-border focus:border-primary flex-1"
