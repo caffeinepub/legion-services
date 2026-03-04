@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== FONTS ===== */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque[opsz,wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/assets/fonts/CabinetGrotesk-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sora";
+  src: url("/assets/fonts/Sora[wght].woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.375rem;
+
+    /* Legion Dark Theme — Obsidian + Gold + Violet */
+    --background: 0.1 0.008 265;
+    --foreground: 0.94 0.01 90;
+
+    --card: 0.13 0.012 265;
+    --card-foreground: 0.94 0.01 90;
+
+    --popover: 0.15 0.014 265;
+    --popover-foreground: 0.94 0.01 90;
+
+    /* Gold primary */
+    --primary: 0.78 0.16 75;
+    --primary-foreground: 0.1 0.008 265;
+
+    /* Violet secondary */
+    --secondary: 0.22 0.03 275;
+    --secondary-foreground: 0.85 0.05 90;
+
+    --muted: 0.18 0.015 270;
+    --muted-foreground: 0.58 0.025 275;
+
+    /* Electric gold accent */
+    --accent: 0.72 0.18 65;
+    --accent-foreground: 0.1 0.008 265;
+
+    --destructive: 0.62 0.22 25;
+    --destructive-foreground: 0.98 0 0;
+
+    --border: 0.25 0.02 270;
+    --input: 0.22 0.018 270;
+    --ring: 0.78 0.16 75;
+
+    --chart-1: 0.78 0.16 75;
+    --chart-2: 0.65 0.2 295;
+    --chart-3: 0.55 0.18 220;
+    --chart-4: 0.72 0.15 140;
+    --chart-5: 0.62 0.22 25;
+
+    --sidebar: 0.12 0.01 265;
+    --sidebar-foreground: 0.94 0.01 90;
+    --sidebar-primary: 0.78 0.16 75;
+    --sidebar-primary-foreground: 0.1 0.008 265;
+    --sidebar-accent: 0.18 0.015 270;
+    --sidebar-accent-foreground: 0.85 0.05 90;
+    --sidebar-border: 0.25 0.02 270;
+    --sidebar-ring: 0.78 0.16 75;
+
+    /* Custom Legion vars */
+    --gold: 0.78 0.16 75;
+    --gold-bright: 0.85 0.19 75;
+    --violet: 0.58 0.22 295;
+    --violet-dim: 0.45 0.18 295;
+    --obsidian: 0.08 0.012 265;
+    --slash-color: 0.78 0.16 75;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Sora", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  /* Gold text glow */
+  .text-glow-gold {
+    text-shadow: 0 0 20px oklch(0.78 0.16 75 / 0.5), 0 0 40px oklch(0.78 0.16 75 / 0.25);
+  }
+
+  /* Violet text glow */
+  .text-glow-violet {
+    text-shadow: 0 0 20px oklch(0.58 0.22 295 / 0.5), 0 0 40px oklch(0.58 0.22 295 / 0.25);
+  }
+
+  /* Card gold glow */
+  .card-glow-gold {
+    box-shadow:
+      0 0 0 1px oklch(0.78 0.16 75 / 0.25),
+      0 4px 24px oklch(0.78 0.16 75 / 0.08),
+      0 1px 3px oklch(0 0 0 / 0.5);
+  }
+
+  /* Slash diagonal pseudo-element decoration */
+  .slash-border {
+    position: relative;
+  }
+  .slash-border::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      oklch(0.78 0.16 75 / 0),
+      oklch(0.78 0.16 75 / 1) 30%,
+      oklch(0.78 0.16 75 / 1) 70%,
+      oklch(0.78 0.16 75 / 0)
+    );
+    border-radius: 2px;
+  }
+
+  /* Noise texture overlay */
+  .noise-overlay {
+    position: relative;
+  }
+  .noise-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Animated gradient border */
+  .gradient-border {
+    position: relative;
+    background: oklch(0.13 0.012 265);
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      135deg,
+      oklch(0.78 0.16 75 / 0.6),
+      oklch(0.58 0.22 295 / 0.4),
+      oklch(0.78 0.16 75 / 0.1),
+      oklch(0.58 0.22 295 / 0.3)
+    );
+    border-radius: calc(var(--radius) + 1px);
+    z-index: -1;
+  }
+}
