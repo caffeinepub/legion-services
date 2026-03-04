@@ -1,11 +1,12 @@
 import Nat "mo:core/Nat";
-import Order "mo:core/Order";
-import Runtime "mo:core/Runtime";
 import Iter "mo:core/Iter";
 import Map "mo:core/Map";
 import Array "mo:core/Array";
-import Text "mo:core/Text";
+import Runtime "mo:core/Runtime";
+import Order "mo:core/Order";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   type ServiceCategory = {
     #discordServices;
@@ -57,7 +58,7 @@ actor {
     };
   };
 
-  var nextOrderId = 1;
+  stable var nextOrderId = 1;
 
   let services = Map.empty<Nat, Service>();
   let orders = Map.empty<Nat, Order>();
@@ -157,6 +158,7 @@ actor {
     },
   ];
 
+  // Initialize services map with initial data
   for (service in initialServicesData.values()) {
     services.add(service.id, service);
   };
@@ -172,7 +174,13 @@ actor {
     };
   };
 
-  public shared ({ caller }) func submitOrder(serviceId : Nat, quantity : Nat, paymentMethod : PaymentType, contactInfo : Text, notes : Text) : async Nat {
+  public shared ({ caller }) func submitOrder(
+    serviceId : Nat,
+    quantity : Nat,
+    paymentMethod : PaymentType,
+    contactInfo : Text,
+    notes : Text,
+  ) : async Nat {
     let order : Order = {
       id = nextOrderId;
       serviceId;

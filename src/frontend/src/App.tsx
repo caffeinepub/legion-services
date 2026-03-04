@@ -967,8 +967,9 @@ function ServicesSection({
   initialTab = "discord",
 }: ServicesSectionProps) {
   const { data: backendServices, isLoading, isError } = useAvailableServices();
+  // Use backend services if available, otherwise always fall back to hardcoded list
   const services =
-    backendServices && backendServices.length > 0
+    !isError && backendServices && backendServices.length > 0
       ? backendServices
       : fallbackServices;
 
@@ -1037,16 +1038,6 @@ function ServicesSection({
                   <ServiceSkeleton key={k} />
                 ))}
               </div>
-            ) : isError ? (
-              <div
-                className="text-center py-12 text-destructive border border-destructive/30 rounded-lg"
-                data-ocid="services.error_state"
-              >
-                <p className="font-semibold">Failed to load services.</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Showing cached services below.
-                </p>
-              </div>
             ) : discordServices.length === 0 ? (
               <div
                 className="text-center py-16 text-muted-foreground"
@@ -1078,16 +1069,6 @@ function ServicesSection({
                 {["sk-b1", "sk-b2", "sk-b3"].map((k) => (
                   <ServiceSkeleton key={k} />
                 ))}
-              </div>
-            ) : isError ? (
-              <div
-                className="text-center py-12 text-destructive border border-destructive/30 rounded-lg"
-                data-ocid="services.error_state"
-              >
-                <p className="font-semibold">Failed to load services.</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Showing cached services below.
-                </p>
               </div>
             ) : bloxServices.length === 0 ? (
               <div

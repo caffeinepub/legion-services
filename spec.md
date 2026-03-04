@@ -1,33 +1,18 @@
 # Legion Services
 
 ## Current State
-A dark-themed service marketplace website for Discord (Nitro, boosts, decorations) and Blox Fruits services. Customers can browse services and submit orders via a modal form. The backend stores orders with status (pending, inProgress, completed, cancelled) and exposes `getAllOrders`, `getOrdersByStatus`, and `updateOrderStatus` APIs. There is no admin interface to view or manage orders.
+Full-stack app with Motoko backend and React frontend. Backend stores services and orders. Services section is broken — `getAvailableServices()` and `getAllServices()` call `.sort()` without a comparator argument, causing a runtime trap. The frontend falls back to hardcoded services when the backend fails, but services never load from the live backend.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Admin orders panel: a protected `/admin` route accessible via a hidden link or secret path
-- Admin login screen: a simple password-based gate (hardcoded admin PIN/password on frontend, no backend auth needed)
-- Orders dashboard: table/list showing all orders with columns: Order ID, Service Name, Quantity, Payment Method, Contact Info, Notes, Status
-- Status filter tabs: All, Pending, In Progress, Completed, Cancelled
-- Status update control: dropdown or buttons per row to change an order's status (calls `updateOrderStatus`)
-- Order count badges on each filter tab
-- Admin nav link in navbar (subtle, e.g. small "Admin" text link)
+- Nothing new
 
 ### Modify
-- App routing: add a `/admin` route alongside the main landing page (using a simple hash-based or URL state approach, no react-router needed — can use a state toggle or `window.location.hash`)
-- Navbar: add a discreet admin link
+- Fix `getAllServices()`, `getAvailableServices()`, `getServicesByCategory()`, `getAllOrders()`, `getOrdersByStatus()` to pass the correct comparator to `.sort()` so queries succeed and services load from the live backend.
 
 ### Remove
-- Nothing removed
+- Nothing
 
 ## Implementation Plan
-1. Create `AdminPage.tsx` component with:
-   - Login gate (password check, stored in sessionStorage)
-   - Orders table with service name resolution (map serviceId to name using `getAllServices`)
-   - Filter tabs (All / Pending / In Progress / Completed / Cancelled) with counts
-   - Per-row status update select/dropdown using `updateOrderStatus` mutation
-   - Loading/empty/error states
-2. Add routing logic to `App.tsx`: check `window.location.hash === '#admin'` or a state variable to render `AdminPage` vs the normal landing page
-3. Add a subtle "Admin" link in the Navbar footer or as a small footer link
-4. Wire backend hooks: `useAllOrders`, `useAllServices`, `useUpdateOrderStatus` in `useQueries.ts`
+1. Regenerate Motoko backend with correct `.sort(Service.compare)` and `.sort(OrderCompare.compare)` calls in all query functions.
